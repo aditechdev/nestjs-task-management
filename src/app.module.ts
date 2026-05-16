@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [TasksModule],
 })
 export class AppModule {}
+//Each aplocation has atleast 1 module
+// Module are singelton
+// It is a good practice to have 1 module per folder
