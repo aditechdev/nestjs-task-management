@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
 import { AuthCredentialDto } from './dto/auth-credential.dto';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './jwt-payload.interface';
 
@@ -14,7 +14,7 @@ export class AuthService {
   ) {}
 
   async signUp(authCredentialDto: AuthCredentialDto): Promise<void> {
-    return this.userRepository.createUser(authCredentialDto);
+    return await this.userRepository.createUser(authCredentialDto);
   }
 
   async signIn(
@@ -23,7 +23,6 @@ export class AuthService {
     const { username, password } = authCredentialDto;
     const user = await this.userRepository.findOne({ where: { username } });
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     if (user && (await bcrypt.compare(password, user.password))) {
       const payload: JwtPayload = { username };
       const accessToken: string = this.jwtService.sign(payload);
