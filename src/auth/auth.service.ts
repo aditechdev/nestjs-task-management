@@ -14,6 +14,7 @@ export class AuthService {
   ) {}
 
   async signUp(authCredentialDto: AuthCredentialDto): Promise<void> {
+    console.log('SERVICE HIT');
     return await this.userRepository.createUser(authCredentialDto);
   }
 

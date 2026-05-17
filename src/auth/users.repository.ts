@@ -23,12 +23,13 @@ export class UsersRepository extends Repository<User> {
       const { username, password } = authCredentialDto;
 
       console.log('STEP 2');
-
       const salt = await bcrypt.genSalt();
 
       console.log('STEP 3');
+      console.log('BEFORE HASH');
 
       const hashedPassword = await bcrypt.hash(password, salt);
+      console.log('AFTER HASH');
 
       console.log('STEP 4');
 
