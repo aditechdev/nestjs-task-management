@@ -20,10 +20,16 @@ import { configValidationSchema } from './config.schema';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const isProduction = configService.get('STAGE') === 'prod';
+        const databaseURL = configService.get<string>('DATABASE_URL');
+
+        console.log(`DEBUG CONNECTION process.env.STAGE  ${process.env.STAGE}`);
+
+        console.log(`DEBUG CONNECTION IsPRODUCTION CHECK ${isProduction}`);
+        console.log(`DEBUG CONNECTION databaseURL URL  ${databaseURL}`);
 
         return {
           type: 'postgres',
-          url: configService.get<string>('DATABASE_URL'),
+          url: databaseURL,
           ssl: isProduction,
           extra: {
             ssl: isProduction ? { rejectUnauthorized: false } : false,
