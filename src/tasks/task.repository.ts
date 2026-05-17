@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 
 import { Task } from './task.entity';
@@ -10,6 +14,8 @@ import { User } from '@/auth/user.entity';
 
 @Injectable()
 export class TasksRepository extends Repository<Task> {
+  private loggeer = new Logger('TasksRepository', { timestamp: true });
+
   constructor(private readonly dataSource: DataSource) {
     super(Task, dataSource.createEntityManager());
   }
@@ -42,7 +48,12 @@ export class TasksRepository extends Repository<Task> {
       );
     }
 
-    const task = await query.getMany();
-    return task;
+    try {
+      const task = await query.getMany();
+      return task;
+    } catch (error) {
+      this.loggeer.error(`${error}`);
+      throw new InternalServerErrorException();
+    }
   }
 }

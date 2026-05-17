@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import {
   Body,
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   Patch,
   Post,
@@ -22,6 +24,7 @@ import { User } from '@/auth/user.entity';
 @UseGuards(AuthGuard())
 @Controller('tasks')
 export class TasksController {
+  private loggeer = new Logger('TasksController');
   constructor(private taskService: TasksService) {}
 
   @Get()
@@ -29,6 +32,9 @@ export class TasksController {
     @Query() filterDto: GetTaskFilterDto,
     @GetUser() user: User,
   ): Promise<Task[]> {
+    this.loggeer.verbose(
+      `User "${user.username}" retrieving all tasks ${JSON.stringify(filterDto)}`,
+    );
     return this.taskService.getTasks(filterDto, user);
   }
 
@@ -42,6 +48,9 @@ export class TasksController {
     @Body() createTaskDto: CreateTaskDto,
     @GetUser() user: User,
   ): Promise<Task> {
+    this.loggeer.verbose(
+      `User "${user.username}" retrieving all tasks ${JSON.stringify(createTaskDto)}`,
+    );
     return this.taskService.createTask(createTaskDto, user);
   }
 
