@@ -9,7 +9,7 @@ import {
 import { DataSource, Repository } from 'typeorm';
 import { User } from './user.entity';
 import { AuthCredentialDto } from './dto/auth-credential.dto';
-import * as bcrypt from 'bcryptjs';
+import * as bcryptjs from 'bcryptjs';
 @Injectable()
 export class UsersRepository extends Repository<User> {
   constructor(private readonly dataSource: DataSource) {
@@ -23,12 +23,12 @@ export class UsersRepository extends Repository<User> {
       const { username, password } = authCredentialDto;
 
       console.log('STEP 2');
-      const salt = await bcrypt.genSalt();
+      const salt = await bcryptjs.genSalt();
 
       console.log('STEP 3');
       console.log('BEFORE HASH');
 
-      const hashedPassword = await bcrypt.hash(password, salt);
+      const hashedPassword = await bcryptjs.hash(password, salt);
       console.log('AFTER HASH');
 
       console.log('STEP 4');
