@@ -9,8 +9,8 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptor());
-  const port = 3000;
-  await app.listen(process.env.PORT ?? port);
+  const port = process.env.PORT;
+  await app.listen(port);
   logger.log(`Application listening on port ${port}`);
 }
 void bootstrap();
