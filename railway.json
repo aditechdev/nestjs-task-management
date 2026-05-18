@@ -5,6 +5,8 @@
     "buildCommand": "yarn build"
   },
   "deploy": {
-    "startCommand": "yarn start:prod"
+    "startCommand": "yarn start:prod",
+    "healthcheckPath": "/health",
+    "healthcheckTimeout": 120
   }
 }

@@ -4,8 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configValidationSchema } from './config.schema';
+import { AppController } from './app.controller';
 
 @Module({
+  controllers: [AppController],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
@@ -25,15 +27,21 @@ import { configValidationSchema } from './config.schema';
         const isInternalRailway = databaseURL?.includes('.railway.internal');
         const requiresSSL = isProduction && !isInternalRailway;
 
+        console.log(
+          `Database: ${isInternalRailway ? 'railway-internal' : 'external'}, ssl=${requiresSSL}`,
+        );
+
         return {
           type: 'postgres',
           url: databaseURL,
-          ssl: requiresSSL,
-          extra: {
-            ssl: requiresSSL ? { rejectUnauthorized: false } : false,
-          },
+          ...(requiresSSL && {
+            ssl: true,
+            extra: { ssl: { rejectUnauthorized: false } },
+          }),
           autoLoadEntities: true,
           synchronize: true,
+          retryAttempts: 5,
+          retryDelay: 2000,
         };
       },
     }),

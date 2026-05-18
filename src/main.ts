@@ -14,6 +14,15 @@ process.on('unhandledRejection', (reason) => {
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
+
+  console.log('Environment check:', {
+    STAGE: process.env.STAGE ?? '(default)',
+    DATABASE_URL: process.env.DATABASE_URL ? 'set' : 'MISSING',
+    JWT_SECRET: process.env.JWT_SECRET ? 'set' : 'MISSING',
+    PORT: process.env.PORT ?? '(default 3000)',
+    RAILWAY: process.env.RAILWAY_ENVIRONMENT ?? 'no',
+  });
+
   try {
     const app = await NestFactory.create(AppModule);
     app.enableCors();
