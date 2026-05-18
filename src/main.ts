@@ -29,7 +29,12 @@ async function bootstrap() {
     app.useGlobalPipes(new ValidationPipe());
     const port = parseInt(process.env.PORT || '3000', 10);
     await app.listen(port, '0.0.0.0');
-    logger.log(`Application listening on port ${port}`);
+
+    const server = app.getHttpServer();
+    server.keepAliveTimeout = 65_000;
+    server.headersTimeout = 66_000;
+
+    logger.log(`Application listening on http://0.0.0.0:${port}`);
   } catch (error) {
     logger.error('Failed to start application', error);
     process.exit(1);
