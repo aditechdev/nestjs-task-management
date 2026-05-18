@@ -9,6 +9,7 @@ import { configValidationSchema } from './config.schema';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      ignoreEnvFile: !!process.env.RAILWAY_ENVIRONMENT,
       envFilePath: process.env.STAGE
         ? [`.env.stage.${process.env.STAGE}`]
         : ['.env'],
@@ -21,26 +22,21 @@ import { configValidationSchema } from './config.schema';
       useFactory: (configService: ConfigService) => {
         const isProduction = configService.get('STAGE') === 'prod';
         const databaseURL = configService.get<string>('DATABASE_URL');
-
-        console.log(`DEBUG CONNECTION process.env.STAGE  ${process.env.STAGE}`);
-
-        console.log(`DEBUG CONNECTION IsPRODUCTION CHECK ${isProduction}`);
-        console.log(`DEBUG CONNECTION databaseURL URL  ${databaseURL}`);
+        const isInternalRailway = databaseURL?.includes('.railway.internal');
+        const requiresSSL = isProduction && !isInternalRailway;
 
         return {
           type: 'postgres',
           url: databaseURL,
-          ssl: isProduction,
+          ssl: requiresSSL,
           extra: {
-            ssl: isProduction ? { rejectUnauthorized: false } : false,
+            ssl: requiresSSL ? { rejectUnauthorized: false } : false,
           },
           autoLoadEntities: true,
-
           synchronize: true,
         };
       },
     }),
-
     AuthModule,
   ],
 })
